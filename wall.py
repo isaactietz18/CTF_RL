@@ -7,7 +7,3 @@ class Wall:
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-
-    def collide(self):
-        # TODO: Implement collision detection
-        pass
