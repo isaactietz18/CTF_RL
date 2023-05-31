@@ -8,9 +8,9 @@ class Player:
         self.speed = speed
         self.is_alive = True
         self.team = team
-        self.has_flag = False
+        self.captured_flag = None
     
-    def update(self, keys, walls, flags):
+    def update(self, keys, walls, flags, scoreboard):
         self.prev_position = self.position.copy()
         direction = pygame.Vector2(0, 0) 
 
@@ -39,7 +39,7 @@ class Player:
         # Capture flags
         for flag in flags:
             self.capture_flag(flag)
-            self.score(flag)
+            self.score(flag, scoreboard)
     
     def collide(self, wall):
         # Collide if the edge of the circle is within the wall
@@ -60,8 +60,8 @@ class Player:
         # Capture flag if touching, not captured, on opposite team
         if self.collide_flag(flag) and not flag.is_captured and self.team != flag.team:
             flag.capture()
-            self.has_flag = True
-            print("Flag captured!")
+            self.captured_flag = flag
+            print(f"I captured the {flag.team} flag!")
     
     def collide_flag(self, flag):
         # Collide if the edge of the circle is within the flag
@@ -70,9 +70,10 @@ class Player:
                 return True
         return False
     
-    def score(self, flag):
+    def score(self, flag, scoreboard):
         # Score if touching home platform and has flag and on same team, reset flag
-        if self.collide_flag(flag) and self.has_flag and self.team == flag.team:
-            self.has_flag = False
+        if self.collide_flag(flag) and self.captured_flag != None and self.team == flag.team:
+            self.captured_flag.reset()
+            self.captured_flag = None
             print("I scored!")
-            flag.reset()
+            scoreboard.update(self.team)

@@ -2,6 +2,8 @@ import pygame
 from wall import Wall
 from player import Player
 from flag import Flag
+from scoreboard import Scoreboard
+from time import sleep
 
 pygame.init()
 
@@ -65,10 +67,13 @@ red_flag = Flag(red_flag_x, red_flag_y, red_flag_color, flag_size)
 player_x = WIDTH // 2
 player_y = HEIGHT // 2
 player_radius = 10
-player_speed = .3
+player_speed = 1
 red_color = (200, 100, 100)
 blue_color = (100, 100, 200)
 blue_player_one = Player(player_x, player_y, blue_color, player_speed, player_radius, "blue")
+
+# Scoreboard
+scoreboard = Scoreboard()
 
 # Game Loop
 running = True
@@ -86,7 +91,7 @@ while running:
         running = False
 
     # Player Update
-    blue_player_one.update(keys, walls + blue_fort_walls + red_fort_walls, [blue_flag, red_flag])
+    blue_player_one.update(keys, walls + blue_fort_walls + red_fort_walls, [blue_flag, red_flag], scoreboard)
     
     # Draw Game Objects
     # Background
@@ -111,7 +116,16 @@ while running:
     # Player
     blue_player_one.draw(window)
 
+    # Scoreboard
+    scoreboard.draw(window)
+
     # Update Display
     pygame.display.update()
+
+    # Quit condition
+    if scoreboard.blue_score == 3 or scoreboard.red_score == 3:
+        print("Game Over!")
+        sleep(3)
+        running = False
 
 pygame.quit()
