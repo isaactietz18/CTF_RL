@@ -66,8 +66,9 @@ player_x = WIDTH // 2
 player_y = HEIGHT // 2
 player_radius = 10
 player_speed = .3
-player_color = (0, 255, 0)
-player = Player(player_x, player_y, player_color, player_speed, player_radius)
+red_color = (200, 100, 100)
+blue_color = (100, 100, 200)
+blue_player_one = Player(player_x, player_y, blue_color, player_speed, player_radius, "blue")
 
 # Game Loop
 running = True
@@ -85,7 +86,7 @@ while running:
         running = False
 
     # Player Update
-    player.update(keys, walls + blue_fort_walls + red_fort_walls)
+    blue_player_one.update(keys, walls + blue_fort_walls + red_fort_walls, [blue_flag, red_flag])
     
     # Draw Game Objects
     # Background
@@ -108,7 +109,7 @@ while running:
     red_flag.draw(window)
     
     # Player
-    player.draw(window)
+    blue_player_one.draw(window)
 
     # Update Display
     pygame.display.update()

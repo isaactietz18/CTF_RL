@@ -1,14 +1,16 @@
 import pygame
 
 class Player:
-    def __init__(self, x, y, color, speed, radius):
+    def __init__(self, x, y, color, speed, radius, team):
         self.position = pygame.Vector2(x, y)
         self.radius = radius
         self.color = color
         self.speed = speed
         self.is_alive = True
+        self.team = team
+        self.has_flag = False
     
-    def update(self, keys, walls):
+    def update(self, keys, walls, flags):
         self.prev_position = self.position.copy()
         direction = pygame.Vector2(0, 0) 
 
@@ -21,16 +23,22 @@ class Player:
             direction += pygame.Vector2(0, 1)
         if keys[pygame.K_d]:
             direction += pygame.Vector2(1, 0)
-
+        
+        # Normalize and scale by speed
         if direction.length() > 0:
             direction.normalize_ip()
             direction *= self.speed
             self.position += direction
         
+        # Collide with walls
         for wall in walls:
             if self.collide(wall):
                 self.position = self.prev_position
                 break
+        
+        # Capture flags
+        for flag in flags:
+            self.capture_flag(flag)
     
     def collide(self, wall):
         # Collide if the edge of the circle is within the wall
@@ -46,3 +54,17 @@ class Player:
     
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.position, self.radius)
+    
+    def capture_flag(self, flag):
+        # Capture flag if touching, not captured, on opposite team
+        if self.collide_flag(flag) and not flag.is_captured and self.team != flag.team:
+            flag.capture()
+            self.has_flag = True
+            print("Flag captured!")
+    
+    def collide_flag(self, flag):
+        # Collide if the edge of the circle is within the flag
+        if flag.position.x < self.position.x + self.radius and flag.position.x + flag.size > self.position.x - self.radius:
+            if flag.position.y < self.position.y + self.radius and flag.position.y + flag.size > self.position.y - self.radius:
+                return True
+        return False
