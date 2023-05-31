@@ -39,6 +39,7 @@ class Player:
         # Capture flags
         for flag in flags:
             self.capture_flag(flag)
+            self.score(flag)
     
     def collide(self, wall):
         # Collide if the edge of the circle is within the wall
@@ -70,7 +71,8 @@ class Player:
         return False
     
     def score(self, flag):
-        # Score if touching home platform and has flag
-        if self.collide_flag(flag) and self.has_flag:
+        # Score if touching home platform and has flag and on same team, reset flag
+        if self.collide_flag(flag) and self.has_flag and self.team == flag.team:
             self.has_flag = False
-            return True
+            print("I scored!")
+            flag.reset()
