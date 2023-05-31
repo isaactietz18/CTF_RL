@@ -68,3 +68,9 @@ class Player:
             if flag.position.y < self.position.y + self.radius and flag.position.y + flag.size > self.position.y - self.radius:
                 return True
         return False
+    
+    def score(self, flag):
+        # Score if touching home platform and has flag
+        if self.collide_flag(flag) and self.has_flag:
+            self.has_flag = False
+            return True
